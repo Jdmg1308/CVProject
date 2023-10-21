@@ -2,8 +2,8 @@ import cv2
 import time
 import mediapipe as mp
 
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.7, min_tracking_confidence=0.5)
+mp_hands = mp.solutions.holistic
+hands = mp_hands.Holistic(static_image_mode=False, min_detection_confidence=0.7, min_tracking_confidence=0.5)
 
 width = 1080
 height = 720
@@ -33,12 +33,12 @@ while True:
     results = hands.process(img_rgb)
 
     # Process the classification result and visualize it.
-    if results.multi_hand_landmarks:
-        for landmarks in results.multi_hand_landmarks:
-            annotated_image = img.copy()
-            mp.solutions.drawing_utils.draw_landmarks(annotated_image, landmarks, mp_hands.HAND_CONNECTIONS)
+    
+    annotated_image = img.copy()
+    mp.solutions.drawing_utils.draw_landmarks(annotated_image, results.right_hand_landmarks, mp_hands.HAND_CONNECTIONS)
+    mp.solutions.drawing_utils.draw_landmarks(annotated_image, results.left_hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
-            cv2.imshow("Hand Landmarks", annotated_image)
+    cv2.imshow("Hand Landmarks", annotated_image)
 
     if cv2.waitKey(1) & 0xFF == 'q':  # Press Esc to exit the loop.
         break
