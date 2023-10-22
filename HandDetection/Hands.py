@@ -5,6 +5,13 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mphands = mp.solutions.hands
 
+# Set the desired window size
+window_width = 1080  # Change this to your desired width
+window_height = 720  # Change this to your desired height
+
+# OpenCV window settings
+#cv2.resizeWindow("Handtracker", window_width, window_height)
+
 cap = cv2.VideoCapture(0)
 hands = mphands.Hands()
 while True:
@@ -26,5 +33,7 @@ while True:
 
                 cv2.line(image, (x0, y0), (x1, y1), (255, 255, 255), 4)  # white color (BGR format)
 
+    #cv2.namedWindow("Handtracker", cv2.WINDOW_NORMAL)
     cv2.imshow("Handtracker", image)
+    #cv2.resizeWindow("Handtracker", window_width, window_height)
     cv2.waitKey(1)
