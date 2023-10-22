@@ -15,11 +15,9 @@ from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 import webbrowser
 
-
-
 # mp_drawing = mp.solutions.drawing_utils
 # mp_drawing_styles = mp.solutions.drawing_styles
-url = "https://www.example.com"
+tab_open = False
 index_x = 0
 index_y = 0
 mphands = mp.solutions.hands
@@ -55,6 +53,7 @@ def mouse_click(position_x, position_y):
 def jesters():
     global index_x
     global index_y
+    global tab_open
     # print(top_gesture)
     match top_gesture:
         case 'Pointing_Up':
@@ -64,12 +63,18 @@ def jesters():
         case 'Thumb_Down':
             decrease_volume()
         case 'Victory':
-            url = "WWW.FAMILYGUYCLIPS.ORG/DIEGO IS STINKY"
-            webbrowser.open(url)
-            
+            if not tab_open:
+                url = "https://www.youtube.com/watch?v=eRXE8Aebp7s"
+                webbrowser.open(url)
+                tab_open = not tab_open
+        case 'Closed_Fist':
+            pyautogui.keyDown('alt')
+            pyautogui.keyDown('tab')
+            pyautogui.sleep(2)
+            pyautogui.keyUp('tab')  
+            pyautogui.keyUp('alt')
+            pyautogui.sleep(3)                                              
         # case 'Open_Palm':
-        #     increase_volume()
-        # case 'Closed_Fist':
         #     increase_volume()
         
 # Create a gesture recognizer instance with the live stream mode:

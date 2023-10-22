@@ -2,7 +2,6 @@
 import pyautogui
 import cv2
 
-
 pointer_finger = int(8)
 thumb = int(4)
 index_y = 0
