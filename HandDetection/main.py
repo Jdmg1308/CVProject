@@ -25,6 +25,7 @@ def move_mouse(current_img, land_marks, width, height):
         if land_mark == thumb:
             cv2.circle(img=current_img, center=(x,y), radius = 10, color=(100,100,100))
             thumb_y = screen_height/height * y
+    ##print("life is roblox")
 
 def mouse_click(position_x, position_y):
     #click at x and y coordinates
@@ -56,7 +57,7 @@ def capture_hand(width, height, mp_hands):
                     cv2.circle(image, (x, y), 8, (0, 0, 0), -1)  # black color (BGR format)
                     cv2.circle(image, (x, y), 6, (12, 124, 194), -1)  # white color (BGR format)
 
-                for connection in mphands.HAND_CONNECTIONS:
+                for connection in mp_hands.HAND_CONNECTIONS:
                     x0, y0 = int(hand_landmarks.landmark[connection[0]].x * image.shape[1]), int(hand_landmarks.landmark[connection[0]].y * image.shape[0])
                     x1, y1 = int(hand_landmarks.landmark[connection[1]].x * image.shape[1]), int(hand_landmarks.landmark[connection[1]].y * image.shape[0])
                     cv2.line(image, (x0, y0), (x1, y1), (0, 0, 0), 4)  # black color (BGR format)
@@ -65,7 +66,7 @@ def capture_hand(width, height, mp_hands):
 
         # gestures will resturn result
         #if result == no_gesture) == move_mouse
-        move_mouse(image, hand_landmarks, width, height)
+        move_mouse(image, results.multi_hand_landmarks, width, height)
 
         #if result == point up
         # if abs(thumb_y - index_y < 20):
