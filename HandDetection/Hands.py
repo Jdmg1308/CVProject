@@ -28,14 +28,14 @@ while True:
             for landmark in hand_landmarks.landmark:
                 x, y = int(landmark.x * image.shape[1]), int(landmark.y * image.shape[0])
                 cv2.circle(image, (x, y), 8, (0, 0, 0), -1)  # black color (BGR format)
-                cv2.circle(image, (x, y), 6, (255, 255, 255), -1)  # white color (BGR format)
+                cv2.circle(image, (x, y), 6, (12, 124, 194), -1)  # white color (BGR format)
 
             for connection in mphands.HAND_CONNECTIONS:
                 x0, y0 = int(hand_landmarks.landmark[connection[0]].x * image.shape[1]), int(hand_landmarks.landmark[connection[0]].y * image.shape[0])
                 x1, y1 = int(hand_landmarks.landmark[connection[1]].x * image.shape[1]), int(hand_landmarks.landmark[connection[1]].y * image.shape[0])
-                cv2.line(image, (x0, y0), (x1, y1), (0, 0, 0), 6)  # black color (BGR format)
+                cv2.line(image, (x0, y0), (x1, y1), (0, 0, 0), 4)  # black color (BGR format)
 
-                cv2.line(image, (x0, y0), (x1, y1), (255, 255, 255), 4)  # white color (BGR format)
+                cv2.line(image, (x0, y0), (x1, y1), (255, 255, 255), 2)  # white color (BGR format)
 
     #cv2.namedWindow("Handtracker", cv2.WINDOW_NORMAL)
     cv2.imshow("Handtracker", image)
