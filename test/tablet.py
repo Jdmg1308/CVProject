@@ -10,34 +10,68 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import time
 import threading
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+import webbrowser
+
+
 
 # mp_drawing = mp.solutions.drawing_utils
 # mp_drawing_styles = mp.solutions.drawing_styles
+url = "https://www.example.com"
 index_x = 0
 index_y = 0
 mphands = mp.solutions.hands
 top_gesture = 'None'
 move_thread = 0
-click_thread = 0
+jester_thread = 0
 screen_width, screen_height = pyautogui.size()
 GestureRecognizerResult = mp.tasks.vision.GestureRecognizerResult
 VisionRunningMode = mp.tasks.vision.RunningMode
+ratio = screen_height/screen_width
+
+# Function to increase the volume
+def increase_volume():
+    devices = AudioUtilities.GetSpeakers()
+    interface = devices.Activate(
+        IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume = cast(interface, POINTER(IAudioEndpointVolume))
+    current_volume = volume.GetMasterVolumeLevelScalar()
+    volume.SetMasterVolumeLevelScalar(min(1.0, current_volume + 0.1), None)
+
+# Function to decrease the volume
+def decrease_volume():
+    devices = AudioUtilities.GetSpeakers()
+    interface = devices.Activate(
+        IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume = cast(interface, POINTER(IAudioEndpointVolume))
+    current_volume = volume.GetMasterVolumeLevelScalar()
+    volume.SetMasterVolumeLevelScalar(max(0.0, current_volume - 0.1), None)
 
 def mouse_click(position_x, position_y):
     pyautogui.click(position_x, position_y)
 
 def jesters():
-    global click_thread
     global index_x
     global index_y
     # print(top_gesture)
     match top_gesture:
         case 'Pointing_Up':
-            click_thread = threading.Thread(target=mouse_click, args=(index_x, index_y,))
-            click_thread.start()
+            mouse_click(index_x, index_y)
+        case 'Thumb_Up':
+            increase_volume()
+        case 'Thumb_Down':
+            decrease_volume()
+        case 'Victory':
+            url = "WWW.FAMILYGUYCLIPS.ORG/DIEGO IS STINKY"
+            webbrowser.open(url)
+            
+        # case 'Open_Palm':
+        #     increase_volume()
         # case 'Closed_Fist':
-            # print("Closed_Fist")
-
+        #     increase_volume()
+        
 # Create a gesture recognizer instance with the live stream mode:
 def print_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
     global top_gesture
@@ -50,9 +84,11 @@ def move_mouse(results, frame, width, height):
     global index_y
     global screen_width
     global screen_height
+    global ratio
     index = results.multi_hand_landmarks[0].landmark[8]
-    x = int(index.x * width)
-    y = int(index.y * height)
+    sens = 1.4
+    x = int(index.x * width * sens)
+    y = int(index.y * height * ratio * sens)
     cv2.circle(img=frame, center=(x,y), radius = 10, color=(100,100,100))
     index_x = screen_width/width * x
     index_y = screen_height/height * y
@@ -79,7 +115,7 @@ recognizer = vision.GestureRecognizer.create_from_options(options)
 
 def THE_method(width, height):
     global move_thread
-    global click_thread
+    global jester_thread
     cap = cv2.VideoCapture(0)
     cap.set(3, width)
     cap.set(4, height)
@@ -93,8 +129,8 @@ def THE_method(width, height):
         results = hands.process(frame)
         
         if results.multi_hand_landmarks:
-            if move_thread != 0 and click_thread != 0 :
-                click_thread.join()
+            if move_thread != 0 and jester_thread != 0 :
+                jester_thread.join()
                 move_thread.join()
             move_thread = threading.Thread(target=move_mouse, args=(results, frame, width, height,))
             move_thread.start()
@@ -104,7 +140,8 @@ def THE_method(width, height):
         recognition_result = recognizer.recognize_async(mp_image, int(cap.get(cv2.CAP_PROP_POS_MSEC)))
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         
-        jesters()
+        jester_thread = threading.Thread(target=jesters, args=())
+        jester_thread.start()
         cv2.imshow("Handtracker", frame)
         cv2.waitKey(1)
         if(keyboard.is_pressed('q')):
@@ -116,7 +153,7 @@ def THE_method(width, height):
 def gen_hand():
     global screen_width
     global screen_height
-    ratio = screen_height/screen_width
+    global ratio
     window_width = 1080
     window_height = ratio * window_width
     THE_method(window_width, window_height)
