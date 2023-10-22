@@ -1,5 +1,6 @@
 import cv2
 import mediapipe as mp
+import keyboard
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -37,3 +38,10 @@ while True:
     cv2.imshow("Handtracker", image)
     #cv2.resizeWindow("Handtracker", window_width, window_height)
     cv2.waitKey(1)
+
+    if(keyboard.is_pressed('q')):
+        break
+
+cap.release()
+
+cv2.destroyAllWindows()
