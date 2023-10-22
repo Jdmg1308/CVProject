@@ -6,6 +6,9 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mphands = mp.solutions.hands
 
 cap = cv2.VideoCapture(0)
+cap.set(3, 1080)
+cap.set(4, 720)
+
 hands = mphands.Hands()
 while True:
     data, image=cap.read()
