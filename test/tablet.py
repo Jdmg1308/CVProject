@@ -17,28 +17,32 @@ index_x = 0
 index_y = 0
 mphands = mp.solutions.hands
 top_gesture = 'None'
+move_thread = 0
+click_thread = 0
 screen_width, screen_height = pyautogui.size()
 GestureRecognizerResult = mp.tasks.vision.GestureRecognizerResult
 VisionRunningMode = mp.tasks.vision.RunningMode
 
+def mouse_click(position_x, position_y):
+    pyautogui.click(position_x, position_y)
+
 def jesters():
+    global click_thread
+    global index_x
+    global index_y
     # print(top_gesture)
     match top_gesture:
         case 'Pointing_Up':
-            mouse_click(index_x, index_y)
+            click_thread = threading.Thread(target=mouse_click, args=(index_x, index_y,))
+            click_thread.start()
         # case 'Closed_Fist':
             # print("Closed_Fist")
-
-def mouse_click(position_x, position_y):
-    pyautogui.click(position_x, position_y)
-    pyautogui.sleep(1)
 
 # Create a gesture recognizer instance with the live stream mode:
 def print_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
     global top_gesture
     for gesture in result.gestures:
             top_gesture = [category.category_name for category in gesture][0]
-            # print(top_gesture)
 
 # Moves the mouse to the index finger
 def move_mouse(results, frame, width, height):
@@ -53,7 +57,6 @@ def move_mouse(results, frame, width, height):
     index_x = screen_width/width * x
     index_y = screen_height/height * y
     pyautogui.moveTo(index_x, index_y)
-    time.sleep(.005)
 
 #Nathan was straight cooking on this method.
 def cooking(results, frame):
@@ -75,6 +78,8 @@ options = vision.GestureRecognizerOptions(base_options=base_options, min_trackin
 recognizer = vision.GestureRecognizer.create_from_options(options)
 
 def THE_method(width, height):
+    global move_thread
+    global click_thread
     cap = cv2.VideoCapture(0)
     cap.set(3, width)
     cap.set(4, height)
@@ -88,7 +93,11 @@ def THE_method(width, height):
         results = hands.process(frame)
         
         if results.multi_hand_landmarks:
-            move_mouse(results, frame, width, height)
+            if move_thread != 0 and click_thread != 0 :
+                click_thread.join()
+                move_thread.join()
+            move_thread = threading.Thread(target=move_mouse, args=(results, frame, width, height,))
+            move_thread.start()
             cooking(results, frame)
             
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
