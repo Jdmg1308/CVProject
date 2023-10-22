@@ -8,6 +8,8 @@ import keyboard
 import pyautogui
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
+import time
+import threading
 
 # mp_drawing = mp.solutions.drawing_utils
 # mp_drawing_styles = mp.solutions.drawing_styles
@@ -50,7 +52,8 @@ def move_mouse(results, frame, width, height):
     cv2.circle(img=frame, center=(x,y), radius = 10, color=(100,100,100))
     index_x = screen_width/width * x
     index_y = screen_height/height * y
-    pyautogui.moveTo(index_x, index_y, duration=.005)
+    pyautogui.moveTo(index_x, index_y)
+    time.sleep(.005)
 
 #Nathan was straight cooking on this method.
 def cooking(results, frame):
@@ -78,7 +81,7 @@ def THE_method(width, height):
     hands = mphands.Hands()
 
     while True:
-        data, frame=cap.read()
+        data, frame = cap.read()
         if not data:
             break
         frame = cv2.cvtColor(cv2.flip(frame, 1), cv2.COLOR_BGR2RGB)
@@ -91,7 +94,6 @@ def THE_method(width, height):
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
         recognition_result = recognizer.recognize_async(mp_image, int(cap.get(cv2.CAP_PROP_POS_MSEC)))
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-
         
         jesters()
         cv2.imshow("Handtracker", frame)
