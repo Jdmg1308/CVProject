@@ -43,10 +43,8 @@ def print_result(result: GestureRecognizerResult, output_image: mp.Image, timest
     print('gesture recognition result: {}'.format(result))
 
 
-options = GestureRecognizerOptions(
-    base_options=BaseOptions(model_asset_path='gesture_recognizer.task'),
-    running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=print_result)
+options = GestureRecognizerOptions(base_options=BaseOptions(model_asset_path='gesture_recognizer.task'),
+    running_mode=VisionRunningMode.LIVE_STREAM)
 
 timestamp = 0
 with GestureRecognizer.create_from_options(options) as recognizer:

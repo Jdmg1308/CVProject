@@ -154,7 +154,7 @@ with GestureRecognizer.create_from_options(options) as recognizer:
         results = hands.process(image)
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         
-        #gesture stuff
+        #gesture stuffz
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image)
         recognition_result = recognizer.recognize_async(mp_image, timestamp)
         cv2.imshow("mp_image", mp_image)
