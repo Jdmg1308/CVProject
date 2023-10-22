@@ -141,7 +141,6 @@ with GestureRecognizer.create_from_options(options) as recognizer:
     # top_gesture = recognition_result.gestures[0][0]
     # hand_landmarks = recognition_result.hand_landmarks
 
-
     mp_drawing = mp.solutions.drawing_utils
     mp_drawing_styles = mp.solutions.drawing_styles
     mphands = mp.solutions.hands
@@ -158,6 +157,8 @@ with GestureRecognizer.create_from_options(options) as recognizer:
         #gesture stuff
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image)
         recognition_result = recognizer.recognize_async(mp_image, timestamp)
+        cv2.imshow("mp_image", mp_image)
+        print(recognizer.recognize_async(mp_image, timestamp))
         timestamp += 1
         top_gesture = recognition_result.gestures[0][0]
         #/////////////
