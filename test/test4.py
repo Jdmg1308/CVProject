@@ -12,9 +12,6 @@ mphands = mp.solutions.hands
 window_width = 1080  # Change this to your desired width
 window_height = 720  # Change this to your desired height
 
-# OpenCV window settings
-#cv2.resizeWindow("Handtracker", window_width, window_height)
-
 cap = cv2.VideoCapture(0)
 cap.set(3, window_width)
 cap.set(4, window_height)
@@ -47,7 +44,7 @@ while True:
                 cv2.line(image, (x0, y0), (x1, y1), (255, 255, 255), 2)  # white color (BGR format)
 
     # STEP 4: Recognize gestures in the input image.
-    recognition_result = recognizer.recognize(image)
+    # recognition_result = recognizer.recognize(image)
 
     cv2.imshow("Handtracker", image)
     cv2.waitKey(1)
